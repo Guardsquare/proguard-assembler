@@ -1,0 +1,40 @@
+// Gradle build script for the ProGuard Assembler and Disassembler.
+
+apply plugin: 'java'
+
+repositories {
+    mavenLocal()
+    jcenter()
+}
+
+sourceCompatibility = "${target}"
+targetCompatibility = "${target}"
+
+sourceSets.main {
+    java {
+        srcDirs = ['src']
+    }
+    resources {
+        srcDirs = ['src']
+        include '**/*.properties'
+        include '**/*.gif'
+        include '**/*.png'
+        include '**/*.pro'
+    }
+}
+
+dependencies {
+    compile 'net.sf.proguard:proguard-core:7.0.0'
+}
+
+jar {
+    manifest.from 'src/META-INF/MANIFEST.MF'
+}
+
+task copyToLib(type: Copy) {
+    from jar
+    from configurations.runtime
+    into 'lib'
+}
+
+assemble.dependsOn copyToLib
