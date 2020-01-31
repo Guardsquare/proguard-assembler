@@ -62,7 +62,7 @@ the Apache License Version 2.0. Please consult the [license
 page](docs/md/license.md) for more details.
 
 The code is written in Java, so it requires a Java Runtime Environment
-JRE 1.8 or higher).
+(JRE 1.8 or higher).
 
 You can download the assembler and disassembler in various forms:
 
