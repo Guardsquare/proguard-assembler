@@ -62,60 +62,29 @@ public class Assembler
         ClassPool libraryClassPool = new ClassPool();
         ClassPool programClassPool = new ClassPool();
 
-        ClassPoolFiller libraryClassPoolFiller = new ClassPoolFiller(libraryClassPool);
-        ClassPoolFiller programClassPoolFiller = new ClassPoolFiller(programClassPool);
-
         // Read the libraries.
         if (libraryPath != null)
         {
-            for (String libraryFileName : libraryPath)
-            {
-                System.out.println("Reading library file ["+libraryFileName+"]...");
-
-                // Any libraries go into the library class pool.
-                DataEntryReader libraryClassReader =
-                    new ClassReader(true, false, false, false, null, libraryClassPoolFiller);
-
-                DirectoryPump libraryPump = new DirectoryPump(new File(libraryFileName));
-                libraryPump.pumpDataEntries(reader(libraryClassReader,
-                                                   null,
-                                                   null));
-            }
+            readLibraries(libraryPath, libraryClassPool);
         }
 
         // Read the actual input.
+        DataEntrySource inputSource =
+            source(inputFileName);
+
         System.out.println("Reading input file ["+inputFileName+"]...");
 
-        DirectoryPump inputPump =
-            new DirectoryPump(new File(inputFileName));
-
-        // Any class files go into the library class pool.
-        DataEntryReader classReader =
-            new ClassReader(false, false, false, false, null, libraryClassPoolFiller);
-
-        // Any jbc files go into the program class pool.
-        DataEntryReader jbcReader =
-            new JbcReader(programClassPoolFiller);
-
-        inputPump.pumpDataEntries(reader(classReader,
-                                         jbcReader,
-                                         null));
+        readInput(inputSource,
+                  libraryClassPool,
+                  programClassPool);
 
         // Preverify the program class pool.
         if (libraryPath != null && programClassPool.size() > 0)
         {
             System.out.println("Preverifying assembled class files...");
 
-            programClassPool.classesAccept(new ClassReferenceInitializer(programClassPool, libraryClassPool));
-            programClassPool.classesAccept(new ClassSuperHierarchyInitializer(programClassPool, libraryClassPool));
-            libraryClassPool.classesAccept(new ClassReferenceInitializer(programClassPool, libraryClassPool));
-            libraryClassPool.classesAccept(new ClassSuperHierarchyInitializer(programClassPool, libraryClassPool));
-
-            programClassPool.classesAccept(
-                new ClassVersionFilter(VersionConstants.CLASS_VERSION_1_6,
-                new AllMethodVisitor(
-                new AllAttributeVisitor(
-                new CodePreverifier(false)))));
+            preverify(libraryClassPool,
+                      programClassPool);
         }
 
         // Clean up the program classes.
@@ -125,6 +94,96 @@ public class Assembler
         // Write out the output.
         System.out.println("Writing output file ["+outputFileName+"]...");
 
+        writeOutput(inputSource,
+                    outputFileName,
+                    libraryClassPool,
+                    programClassPool);
+    }
+
+
+    /**
+     * Reads the specified libraries as library classes in the given class pool.
+     */
+    private static void readLibraries(String[]  libraryPath,
+                                      ClassPool libraryClassPool)
+    throws IOException
+    {
+        for (String libraryFileName : libraryPath)
+        {
+            System.out.println("Reading library file ["+libraryFileName+"]...");
+
+            // Any libraries go into the library class pool.
+            DataEntryReader libraryClassReader =
+                new ClassReader(true, false, false, false, null,
+                new ClassPoolFiller(libraryClassPool));
+
+            DataEntrySource librarySource =
+                source(libraryFileName);
+
+            librarySource.pumpDataEntries(reader(libraryClassReader,
+                                                 null,
+                                                 null));
+        }
+    }
+
+
+    /**
+     * Reads the specified input as program classes (for .jbc files) and
+     * library classes (for .class files) in the given class pools.
+     */
+    private static void readInput(DataEntrySource inputSource,
+                                  ClassPool       libraryClassPool,
+                                  ClassPool       programClassPool)
+    throws IOException
+    {
+        // Any class files go into the library class pool.
+        DataEntryReader classReader =
+            new ClassReader(false, false, false, false, null,
+            new ClassPoolFiller(libraryClassPool));
+
+        // Any jbc files go into the program class pool.
+        DataEntryReader jbcReader =
+            new JbcReader(
+            new ClassPoolFiller(programClassPool));
+
+        DataEntryReader reader =
+            reader(classReader,
+                   jbcReader,
+                   null);
+
+        inputSource.pumpDataEntries(reader);
+    }
+
+
+    /**
+     * Preverifies the program classes in the given class pools.
+     */
+    private static void preverify(ClassPool libraryClassPool,
+                                  ClassPool programClassPool)
+    {
+        programClassPool.classesAccept(new ClassReferenceInitializer(programClassPool, libraryClassPool));
+        programClassPool.classesAccept(new ClassSuperHierarchyInitializer(programClassPool, libraryClassPool));
+        libraryClassPool.classesAccept(new ClassReferenceInitializer(programClassPool, libraryClassPool));
+        libraryClassPool.classesAccept(new ClassSuperHierarchyInitializer(programClassPool, libraryClassPool));
+
+        programClassPool.classesAccept(
+            new ClassVersionFilter(VersionConstants.CLASS_VERSION_1_6,
+                                   new AllMethodVisitor(
+            new AllAttributeVisitor(
+            new CodePreverifier(false)))));
+    }
+
+
+    /**
+     * Reads the specified input, replacing .class files by .jbc files and
+     * vice versa, and writing them to the specified output.
+     */
+    private static void writeOutput(DataEntrySource inputSource,
+                                    String          outputFileName,
+                                    ClassPool       libraryClassPool,
+                                    ClassPool       programClassPool)
+    throws IOException
+    {
         DataEntryWriter writer = writer(outputFileName);
 
         // Write out class files as jbc files.
@@ -143,11 +202,32 @@ public class Assembler
 
         // Read the input again, writing out disassembled/assembled/preverified
         // files.
-        inputPump.pumpDataEntries(reader(new IdleRewriter(classAsJbcWriter),
-                                         new IdleRewriter(jbcAsClassWriter),
-                                         new DataEntryCopier(writer)));
+        inputSource.pumpDataEntries(reader(new IdleRewriter(classAsJbcWriter),
+                                           new IdleRewriter(jbcAsClassWriter),
+                                           new DataEntryCopier(writer)));
 
         writer.close();
+    }
+
+
+    /**
+     * Creates a data entry source for the given file name.
+     */
+    private static DataEntrySource source(String inputFileName)
+    {
+        boolean isJar   = inputFileName.endsWith(".jar");
+        boolean isJmod  = inputFileName.endsWith(".jmod");
+        boolean isJbc   = inputFileName.endsWith(".jbc");
+        boolean isClass = inputFileName.endsWith(".class");
+
+        File inputFile = new File(inputFileName);
+
+        return isJar  ||
+               isJmod ||
+               isJbc  ||
+               isClass ?
+                   new FileSource(inputFile) :
+                   new DirectorySource(inputFile);
     }
 
 
@@ -202,21 +282,23 @@ public class Assembler
      */
     private static DataEntryWriter writer(String outputFileName)
     {
-        boolean outIsJar   = outputFileName.endsWith(".jar");
-        boolean outIsJmod  = outputFileName.endsWith(".jmod");
-        boolean outIsJbc   = outputFileName.endsWith(".jbc");
-        boolean outIsClass = outputFileName.endsWith(".class");
+        boolean isJar   = outputFileName.endsWith(".jar");
+        boolean isJmod  = outputFileName.endsWith(".jmod");
+        boolean isJbc   = outputFileName.endsWith(".jbc");
+        boolean isClass = outputFileName.endsWith(".class");
+
+        File outputFile = new File(outputFileName);
 
         DataEntryWriter writer =
-            outIsJar   ||
-            outIsJmod  ||
-            outIsJbc   ||
-            outIsClass ?
-                new FixedFileWriter(new File(outputFileName)) :
-                new DirectoryWriter(new File(outputFileName));
+            isJar   ||
+            isJmod  ||
+            isJbc   ||
+            isClass ?
+                new FixedFileWriter(outputFile) :
+                new DirectoryWriter(outputFile);
 
         // Pack jar files.
-        if (outIsJar)
+        if (isJar)
         {
             writer =
                 new JarWriter(
@@ -224,7 +306,7 @@ public class Assembler
         }
 
         // Pack jmod files.
-        else if (outIsJmod)
+        else if (isJmod)
         {
             writer =
                 new JarWriter(
