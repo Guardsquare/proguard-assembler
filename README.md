@@ -1,4 +1,4 @@
-<h4 align="center">Assembler and Disassembler for Java class files.</h4>
+<h4 align="center">Assembler and Disassembler for Java class files</h4>
 
 <!-- Badges -->
 <p align="center">
@@ -114,7 +114,7 @@ scripts in the `bin` directory.
 
 ## Contributing
 
-The **ProGuard Assembler and Disassembler** build on the
+The **ProGuard Assembler and Disassembler** are build on the
 [ProGuard Core](https://github.com/Guardsquare/proguard-core) library.
 
 Contributions, issues and feature requests are welcome in both projects.
