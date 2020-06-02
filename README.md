@@ -115,7 +115,7 @@ scripts in the `bin` directory.
 ## Contributing
 
 The **ProGuard Assembler and Disassembler** are build on the
-[ProGuard Core](https://github.com/Guardsquare/proguard-core) library.
+[ProGuardCORE](https://github.com/Guardsquare/proguard-core) library.
 
 Contributions, issues and feature requests are welcome in both projects.
 Feel free to check the [issues](issues) page and the [contributing
