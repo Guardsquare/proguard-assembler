@@ -2,6 +2,11 @@ plugins {
     id 'java'
 }
 
+wrapper {
+    gradleVersion = '6.4'
+    distributionType = Wrapper.DistributionType.ALL
+}
+
 repositories {
     mavenLocal()
     jcenter()
