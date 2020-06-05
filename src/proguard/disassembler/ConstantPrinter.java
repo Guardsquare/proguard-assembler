@@ -29,7 +29,6 @@ import proguard.classfile.util.*;
  * @author Joachim Vandersmissen
  */
 public class ConstantPrinter
-extends      SimplifiedVisitor
 implements   ConstantVisitor
 {
     private static final int INTEGER_FALSE = 0;

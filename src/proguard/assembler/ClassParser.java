@@ -31,7 +31,6 @@ import proguard.classfile.visitor.ClassVisitor;
  * @author Joachim Vandersmissen
  */
 public class ClassParser
-extends      SimplifiedVisitor
 implements   ClassVisitor
 {
     private final Parser p;
@@ -49,6 +48,9 @@ implements   ClassVisitor
 
 
     // Implementations for ClassVisitor.
+
+    public void visitAnyClass(Clazz clazz) {}
+
 
     public void visitProgramClass(ProgramClass programClass)
     {

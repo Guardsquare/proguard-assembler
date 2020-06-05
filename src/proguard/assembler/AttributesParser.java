@@ -37,7 +37,6 @@ import java.util.*;
  * @author Joachim Vandersmissen
  */
 public class AttributesParser
-extends      SimplifiedVisitor
 implements   ClassVisitor,
              MemberVisitor,
              AttributeVisitor,
@@ -70,6 +69,9 @@ implements   ClassVisitor,
 
 
     // Implementations for ClassVisitor.
+
+    public void visitAnyClass(Clazz clazz) {}
+
 
     public void visitProgramClass(ProgramClass programClass)
     {

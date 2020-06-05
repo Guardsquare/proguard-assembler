@@ -25,7 +25,6 @@ import proguard.classfile.attribute.annotation.target.*;
 import proguard.classfile.attribute.annotation.target.visitor.*;
 import proguard.classfile.attribute.annotation.visitor.*;
 import proguard.classfile.attribute.visitor.AttributeVisitor;
-import proguard.classfile.util.SimplifiedVisitor;
 
 /**
  * Prints Annotations and TypeAnnotations.
@@ -33,7 +32,6 @@ import proguard.classfile.util.SimplifiedVisitor;
  * @author Joachim Vandersmissen
  */
 public class AnnotationsPrinter
-extends      SimplifiedVisitor
 implements   AttributeVisitor,
              AnnotationVisitor,
              TypeAnnotationVisitor,

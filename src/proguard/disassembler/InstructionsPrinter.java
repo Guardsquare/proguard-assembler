@@ -35,7 +35,6 @@ import java.util.*;
  * @author Joachim Vandersmissen
  */
 public class InstructionsPrinter
-extends      SimplifiedVisitor
 implements   AttributeVisitor,
              ExceptionInfoVisitor,
              LineNumberInfoVisitor,

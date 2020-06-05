@@ -28,7 +28,6 @@ import proguard.classfile.visitor.ClassVisitor;
  * @author Joachim Vandersmissen
  */
 public class ClassPrinter
-extends      SimplifiedVisitor
 implements   ClassVisitor
 {
     private final Printer p;
@@ -46,6 +45,9 @@ implements   ClassVisitor
 
 
     // Implementations for ClassVisitor.
+
+    public void visitAnyClass(Clazz clazz) {}
+
 
     public void visitProgramClass(ProgramClass programClass)
     {
