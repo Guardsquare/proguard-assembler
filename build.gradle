@@ -1,4 +1,5 @@
 plugins {
+    id 'distribution'
     id 'java'
     id 'maven-publish'
     id 'signing'
@@ -48,6 +49,30 @@ task copyToLib(type: Copy) {
 }
 
 assemble.dependsOn copyToLib
+
+distributions {
+    main {
+        distributionBaseName.set('proguard-assembler')
+        contents {
+            into('docs') {
+                from('docs/md') {
+                    includeEmptyDirs = false
+                    include '**/*.md'
+                }
+            }
+            from(rootDir) {
+                include 'bin/'
+                include 'lib/'
+                include 'LICENSE'
+            }
+        }
+    }
+}
+
+distTar {
+    compression = Compression.GZIP
+    archiveExtension.set('tar.gz')
+}
 
 publishing {
     publications {
