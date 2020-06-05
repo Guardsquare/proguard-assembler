@@ -38,7 +38,6 @@ import java.util.*;
  * @author Joachim Vandersmissen
  */
 public class InstructionsParser
-extends      SimplifiedVisitor
 implements   MemberVisitor,
              AttributeVisitor,
              ExceptionInfoVisitor,

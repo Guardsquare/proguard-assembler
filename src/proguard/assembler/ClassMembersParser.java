@@ -31,7 +31,6 @@ import proguard.util.ArrayUtil;
  * @author Joachim Vandersmissen
  */
 public class ClassMembersParser
-extends      SimplifiedVisitor
 implements   ClassVisitor,
              MemberVisitor
 {
@@ -55,6 +54,9 @@ implements   ClassVisitor,
 
 
     // Implementations for ClassVisitor.
+
+    public void visitAnyClass(Clazz clazz) {}
+
 
     public void visitProgramClass(ProgramClass programClass)
     {

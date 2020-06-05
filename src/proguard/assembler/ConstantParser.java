@@ -30,7 +30,6 @@ import proguard.classfile.util.*;
  * @author Joachim Vandersmissen
  */
 public class ConstantParser
-extends      SimplifiedVisitor
 implements   ConstantVisitor
 {
     private static final int INTEGER_FALSE = 1;

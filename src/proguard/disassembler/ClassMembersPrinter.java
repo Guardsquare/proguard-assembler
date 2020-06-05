@@ -32,7 +32,6 @@ import java.util.*;
  * @author Joachim Vandersmissen
  */
 public class ClassMembersPrinter
-extends      SimplifiedVisitor
 implements   ClassVisitor,
              MemberVisitor
 {
@@ -51,6 +50,9 @@ implements   ClassVisitor,
 
 
     // Implementations for ClassVisitor.
+
+    public void visitAnyClass(Clazz clazz) {}
+
 
     public void visitProgramClass(ProgramClass programClass)
     {

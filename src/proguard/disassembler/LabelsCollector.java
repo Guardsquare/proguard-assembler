@@ -28,7 +28,6 @@ import proguard.classfile.attribute.preverification.*;
 import proguard.classfile.attribute.visitor.*;
 import proguard.classfile.instruction.*;
 import proguard.classfile.instruction.visitor.InstructionVisitor;
-import proguard.classfile.util.SimplifiedVisitor;
 
 import java.util.Map;
 
@@ -39,7 +38,6 @@ import java.util.Map;
  * @author Joachim Vandersmissen
  */
 public class LabelsCollector
-extends      SimplifiedVisitor
 implements   AttributeVisitor,
              ExceptionInfoVisitor,
              TypeAnnotationVisitor,
