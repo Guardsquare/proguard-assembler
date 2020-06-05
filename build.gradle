@@ -1,6 +1,6 @@
-// Gradle build script for the ProGuard Assembler and Disassembler.
-
-apply plugin: 'java'
+plugins {
+    id 'java'
+}
 
 repositories {
     mavenLocal()
