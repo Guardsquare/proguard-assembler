@@ -1,4 +1,8 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
+    id 'com.github.johnrengelman.shadow'
+    id 'distribution'
     id 'java'
     id 'maven-publish'
     id 'signing'
@@ -10,7 +14,7 @@ wrapper {
 }
 
 group = 'com.guardsquare'
-version = '7.0.0'
+version = '1.0.0'
 
 repositories {
     mavenLocal()
@@ -37,17 +41,45 @@ dependencies {
     compile 'com.guardsquare:proguard-core:7.0.0'
 }
 
-jar {
-    manifest.from 'src/META-INF/MANIFEST.MF'
+task fatJar(type: ShadowJar) {
+    destinationDirectory.set(file("$rootDir/lib"))
+    archiveFileName.set('assembler.jar')
+    from sourceSets.main.output
+    configurations = [project.configurations.runtime]
+    manifest {
+        attributes(
+                'Main-Class': 'proguard.Assembler',
+                'Implementation-Version': archiveVersion.get())
+    }
 }
 
-task copyToLib(type: Copy) {
-    from jar
-    from configurations.runtime
-    into 'lib'
+assemble.dependsOn fatJar
+
+distributions {
+    main {
+        distributionBaseName.set('proguard-assembler')
+        contents {
+            into('lib') {
+                from fatJar.outputs
+            }
+            into('docs') {
+                from('docs/md') {
+                    includeEmptyDirs = false
+                    include '**/*.md'
+                }
+            }
+            from(rootDir) {
+                include 'bin/'
+                include 'LICENSE'
+            }
+        }
+    }
 }
 
-assemble.dependsOn copyToLib
+distTar {
+    compression = Compression.GZIP
+    archiveExtension.set('tar.gz')
+}
 
 publishing {
     publications {
@@ -116,4 +148,8 @@ signing {
     String password = findProperty('PROGUARD_SIGNING_PASSWORD')
     useInMemoryPgpKeys(key, password)
     sign publishing.publications.proguardAssembler
+}
+
+clean {
+    delete file("$rootDir/lib")
 }

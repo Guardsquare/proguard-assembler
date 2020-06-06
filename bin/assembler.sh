@@ -21,15 +21,9 @@ fi
 ASSEMBLER_HOME=`dirname "$ASSEMBLER"`/..
 
 # Find the compiled jar.
-if   [ -f "$ASSEMBLER_HOME/lib/proguard-assembler.jar" ]
-then
-  ASSEMBLER_JAR=$ASSEMBLER_HOME/lib/proguard-assembler.jar
-elif [ -f "$ASSEMBLER_HOME/lib/assembler.jar" ]
+if   [ -f "$ASSEMBLER_HOME/lib/assembler.jar" ]
 then
   ASSEMBLER_JAR=$ASSEMBLER_HOME/lib/assembler.jar
-elif [ -f "$ASSEMBLER_HOME/target/proguard-assembler-7.0.0.jar" ]
-then
-  ASSEMBLER_JAR=$ASSEMBLER_HOME/target/proguard-assembler-7.0.0.jar
 else
   echo 'Please build the project first'
   exit 1

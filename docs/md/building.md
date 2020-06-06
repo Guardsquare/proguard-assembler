@@ -1,17 +1,22 @@
 If you've downloaded the source code of the the **ProGuard Assembler and
-Disassembler**, you can build it in a number of ways:
+Disassembler**, you can build it yourself with Gradle:
 
-- build.gradle : a Gradle build file for all platforms
+- Build the artifacts:
 
-        gradle clean assemble
+        ./gradlew assemble
 
-- pom.xml: a Maven POM for all platforms
+- Build the artifacts when you also have a personal copy of the [ProGuard
+  Core](https://github.com/Guardsquare/proguard-core) library:
 
-        mvn clean package
+        ./gradlew --include-build <path_to_proguard_core> assemble
 
-- build.sh: a simple and fast shell script for GNU/Linux
+- Publish the artifacts to your local Maven cache (something like `~/.m2/`):
 
-        ./build.sh
+        ./gradlew publishToMavenLocal
+
+- Build tar and zip archives with the binaries and documentation:
+
+        ./gradlew distTar distZip
 
 Once built, you can [run the assembler and disassembler](index.md) with the
-scripts in the `bin` directory.
+script `bin/assembler.sh` or `bin/assembler.bat`.
