@@ -95,22 +95,12 @@ You can download the assembler and disassembler in various forms:
 
 ## Building
 
-If you've downloaded the source code, you can build it in a number of ways:
+If you've downloaded the source code, you can build it with Gradle:
 
-- build.gradle : a Gradle build file for all platforms
-
-        gradle clean assemble
-
-- pom.xml: a Maven POM for all platforms
-
-        mvn clean package
-
-- build.sh: a simple and fast shell script for GNU/Linux
-
-        ./build.sh
+    ./gradlew clean assemble
 
 Once built, you can [run the assembler and disassembler](index.md) with the
-scripts in the `bin` directory.
+script `bin/assembler.sh` or `bin/assembler.bat`.
 
 ## Contributing
 
