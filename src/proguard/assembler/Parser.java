@@ -610,7 +610,7 @@ public class Parser extends StreamTokenizer
             double number = nval;
             if (nextTtypeEqualsWord())
             {
-                String literalType = sval.toUpperCase();
+                String literalType = sval.toLowerCase();
                 switch (literalType)
                 {
                     // Java doubles, floats, longs can end with D (or d),
