@@ -457,9 +457,9 @@ implements   AttributeVisitor,
                 {
                     // Java doubles, floats, longs can end with D (or d),
                     // F (or f), L (or l) respectively.
-                    case JavaTypeConstants.DOUBLE: elementValue = new ConstantElementValue(TypeConstants.DOUBLE, 0, cpe.addDoubleConstant(number));       break;
-                    case JavaTypeConstants.FLOAT:  elementValue = new ConstantElementValue(TypeConstants.FLOAT, 0, cpe.addFloatConstant((float) number)); break;
-                    case JavaTypeConstants.LONG:   elementValue = new ConstantElementValue(TypeConstants.LONG, 0, cpe.addLongConstant((long) number));    break;
+                    case AssemblyConstants.TYPE_DOUBLE: elementValue = new ConstantElementValue(TypeConstants.DOUBLE, 0, cpe.addDoubleConstant(number));       break;
+                    case AssemblyConstants.TYPE_FLOAT:  elementValue = new ConstantElementValue(TypeConstants.FLOAT, 0, cpe.addFloatConstant((float) number)); break;
+                    case AssemblyConstants.TYPE_LONG:   elementValue = new ConstantElementValue(TypeConstants.LONG, 0, cpe.addLongConstant((long) number));    break;
                     default:                            p.pushBack();
                 }
             }

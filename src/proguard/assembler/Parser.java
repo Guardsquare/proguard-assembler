@@ -610,14 +610,14 @@ public class Parser extends StreamTokenizer
             double number = nval;
             if (nextTtypeEqualsWord())
             {
-                String literalType = sval.toLowerCase();
+                String literalType = sval.toUpperCase();
                 switch (literalType)
                 {
                     // Java doubles, floats, longs can end with D (or d),
                     // F (or f), L (or l) respectively.
-                    case JavaTypeConstants.DOUBLE: return cpe.addDoubleConstant(number);
-                    case JavaTypeConstants.FLOAT:  return cpe.addFloatConstant((float) number);
-                    case JavaTypeConstants.LONG:   return cpe.addLongConstant((long) number);
+                    case AssemblyConstants.TYPE_DOUBLE: return cpe.addDoubleConstant(number);
+                    case AssemblyConstants.TYPE_FLOAT:  return cpe.addFloatConstant((float) number);
+                    case AssemblyConstants.TYPE_LONG:   return cpe.addLongConstant((long) number);
                     default:                       pushBack();
                 }
             }

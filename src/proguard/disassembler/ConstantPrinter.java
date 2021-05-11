@@ -111,21 +111,21 @@ implements   ConstantVisitor
     public void visitLongConstant(Clazz clazz, LongConstant longConstant)
     {
         p.printNumber(longConstant.u8value);
-        p.printWord(JavaTypeConstants.LONG);
+        p.printWord(AssemblyConstants.TYPE_LONG);
     }
 
 
     public void visitFloatConstant(Clazz clazz, FloatConstant floatConstant)
     {
         p.printNumber(floatConstant.f4value);
-        p.printWord(JavaTypeConstants.FLOAT);
+        p.printWord(AssemblyConstants.TYPE_FLOAT);
     }
 
 
     public void visitDoubleConstant(Clazz clazz, DoubleConstant doubleConstant)
     {
         p.printNumber(doubleConstant.f8value);
-        p.printWord(JavaTypeConstants.DOUBLE);
+        p.printWord(AssemblyConstants.TYPE_DOUBLE);
     }
 
 
