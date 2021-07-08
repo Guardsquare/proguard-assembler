@@ -8,11 +8,6 @@ plugins {
     id 'signing'
 }
 
-wrapper {
-    gradleVersion = '6.4'
-    distributionType = Wrapper.DistributionType.ALL
-}
-
 group = 'com.guardsquare'
 version = '1.0.0'
 
