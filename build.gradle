@@ -4,6 +4,7 @@ plugins {
     id 'com.github.johnrengelman.shadow'
     id 'distribution'
     id 'java'
+    id 'application'
     id 'maven-publish'
     id 'signing'
 }
@@ -19,28 +20,16 @@ repositories {
 sourceCompatibility = "${target}"
 targetCompatibility = "${target}"
 
-sourceSets.main {
-    java {
-        srcDirs = ['src']
-    }
-    resources {
-        srcDirs = ['src']
-        include '**/*.properties'
-        include '**/*.gif'
-        include '**/*.png'
-        include '**/*.pro'
-    }
-}
-
 dependencies {
     compile 'com.guardsquare:proguard-core:7.0.0'
 }
 
 task fatJar(type: ShadowJar) {
+    mainClassName = 'proguard.Assembler'
     destinationDirectory.set(file("$rootDir/lib"))
     archiveFileName.set('assembler.jar')
     from sourceSets.main.output
-    configurations = [project.configurations.runtime]
+    configurations = [project.configurations.runtimeClasspath]
     manifest {
         attributes(
                 'Main-Class': 'proguard.Assembler',
