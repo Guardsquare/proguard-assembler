@@ -24,7 +24,7 @@ java {
 }
 
 dependencies {
-    compile 'com.guardsquare:proguard-core:7.0.0'
+    implementation 'com.guardsquare:proguard-core:7.1.0'
 }
 
 task fatJar(type: ShadowJar) {
