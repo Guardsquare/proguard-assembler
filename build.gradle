@@ -17,8 +17,11 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = "${target}"
-targetCompatibility = "${target}"
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+}
 
 dependencies {
     compile 'com.guardsquare:proguard-core:7.0.0'
