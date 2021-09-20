@@ -87,6 +87,11 @@ implements   ClassVisitor
             }
         }
 
+        if (programClass.u4version == 0)
+        {
+            programClass.u4version = ClassUtil.internalClassVersion(JavaVersionConstants.CLASS_VERSION_1_8);
+        }
+
         ClassEditor classEditor = new ClassEditor(programClass);
         ConstantPoolEditor cpe  = new ConstantPoolEditor(programClass);
 
