@@ -1,32 +1,4 @@
-<h4 align="center">Assembler and Disassembler for Java class files</h4>
-
-<!-- Badges -->
-<p align="center">
-  <!-- CI -->
-  <a href="https://github.com/Guardsquare/proguard-assembler/actions?query=workflow%3A%22Continuous+Integration%22">
-    <img src="https://github.com/Guardsquare/proguard-assembler/workflows/Continuous%20Integration/badge.svg?branch=github-workflow">
-  </a>
-
-  <!-- Github version -->
-  <a href="releases">
-    <img src="https://img.shields.io/github/v/release/guardsquare/proguard-assembler">
-  </a>
-
-  <!-- Maven -->
-  <a href="https://search.maven.org/search?q=g:com.guardsquare">
-    <img src="https://img.shields.io/maven-central/v/com.guardsquare/proguard-parent">
-  </a>
-
-  <!-- License -->
-  <a href="LICENSE">
-    <img src="https://img.shields.io/github/license/guardsquare/proguard-assembler">
-  </a>
-
-  <!-- Twitter -->
-  <a href="https://twitter.com/Guardsquare">
-    <img src="https://img.shields.io/twitter/follow/guardsquare?style=social">
-  </a>
-</p>
+# Assembler and Disassembler for Java class files
 
 The **ProGuard Assembler and Disassembler** can assemble and disassemble
 Java class files.
