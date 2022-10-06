@@ -43,6 +43,8 @@ public class JbcReader implements DataEntryReader
 
     /**
      * Creates a new JbcReader.
+     *
+     * @param classVisitor The class visitor to apply after conversion from JBC to Clazz.
      */
     public JbcReader(ClassVisitor classVisitor)
     {

@@ -195,7 +195,6 @@ public class Parser extends StreamTokenizer
      * @param special  the special char.
      * @param typeName the name of the token type to match, used in the
      *                 ParseException message if needed.
-     * @return the next token, if the next token type equals the char.
      * @throws ParseException if the next token type does not equal the char.
      */
     public void expect(char special, String typeName)
