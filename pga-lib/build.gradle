@@ -1,0 +1,69 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+}
+
+dependencies {
+    api 'com.guardsquare:proguard-core:9.0.3'
+}
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) { publication ->
+            groupId = 'com.guardsquare'
+            artifactId = 'proguard-assembler'
+            version = version
+            pom {
+                name = "ProGuard Assembler and Disassembler"
+                description = 'The ProGuard Assembler and Disassembler can assemble and disassemble Java class files.'
+                url = "https://github.com/Guardsquare/kotlin-metadata-printer"
+                licenses {
+                    license {
+                        name = 'Apache License Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = 'repo'
+                    }
+                }
+                issueManagement {
+                    system = 'Github Tracker'
+                    url = 'https://github.com/Guardsquare/proguard-assembler/issues'
+                }
+                scm {
+                    url = 'https://github.com/Guardsquare/proguard-assembler.git'
+                    connection = 'scm:git:https://github.com/Guardsquare/proguard-assembler.git'
+                }
+                developers {
+                    developer {
+                        id = 'james.hamilton'
+                        name = 'James Hamilton'
+                        organization = 'Guardsquare'
+                        organizationUrl = 'https://www.guardsquare.com/'
+                        roles = ['Project Administrator', 'Developer']
+                    }
+                }
+            }
+
+            from components.java
+
+            if (project.hasProperty('PROGUARD_SIGNING_KEY')) {
+                // We use in-memory ascii-armored keys
+                // See https://docs.gradle.org/current/userguide/signing_plugin.html#sec:in-memory-keys
+                signing {
+                    String key = project.findProperty('PROGUARD_SIGNING_KEY')
+                    String password = project.findProperty('PROGUARD_SIGNING_PASSWORD')
+                    useInMemoryPgpKeys(key, password)
+                    sign publication
+                }
+            }
+        }
+    }
+}

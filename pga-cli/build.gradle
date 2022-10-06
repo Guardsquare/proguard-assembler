@@ -1,0 +1,71 @@
+plugins {
+    id 'distribution'
+    id 'java'
+    id 'application'
+    id 'maven-publish'
+    id 'signing'
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+}
+
+dependencies {
+    implementation project(":pga-lib")
+}
+
+application {
+    mainClassName = 'com.guardsquare.proguard.assembler.AssemblerCli'
+}
+
+jar {
+    dependsOn(":pga-lib:jar")
+    manifest {
+        attributes 'Main-Class': application.mainClassName
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    archiveName "assembler.jar"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+task copyBuild(type: Copy) {
+    dependsOn tasks.jar
+    tasks.assemble.dependsOn(it)
+
+    from tasks.jar.outputs
+    into file("$rootDir/lib")
+}
+
+distributions {
+    main {
+        distributionBaseName.set('proguard-assembler')
+        contents {
+            into("$rootDir/lib") {
+                from jar.outputs
+            }
+            into("docs") {
+                from("$rootDir/docs/md") {
+                    includeEmptyDirs = false
+                    include '**/*.md'
+                }
+            }
+            from(rootDir) {
+                include "$rootDir/bin/"
+                include 'LICENSE'
+            }
+        }
+    }
+}
+
+distTar {
+    compression = Compression.GZIP
+    archiveExtension.set('tar.gz')
+}
+
+clean {
+    delete file("$rootDir/lib")
+}

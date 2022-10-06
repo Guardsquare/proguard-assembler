@@ -61,8 +61,7 @@ The code is written in Java, so it requires a Java Runtime Environment
 
 You can download the assembler and disassembler in various forms:
 
-- [Pre-built artifacts](https://bintray.com/guardsquare/proguard) at JCenter
-- [Pre-built artifacts](https://search.maven.org/search?q=g:net.sf.proguard) at Maven Central
+- [Pre-built artifacts](https://search.maven.org/search?q=g:com.guardsquare) at Maven Central
 - A [Git repository of the source code](https://github.com/Guardsquare/proguard-assembler) at Github
 
 ## Building
@@ -73,6 +72,103 @@ If you've downloaded the source code, you can build it with Gradle:
 
 Once built, you can [run the assembler and disassembler](index.md) with the
 script `bin/assembler.sh` or `bin/assembler.bat`.
+
+## Using as a library
+
+You can use the ProGuard assembler or disassembler from your own code by
+adding a dependency on the ProGuard assembler library. For a more complete
+example, see the CLI project (`pga-cli`).
+
+```kotlin
+import com.guardsquare.proguard.assembler.io.JbcReader
+import proguard.classfile.ClassPool
+import proguard.classfile.VersionConstants.CLASS_VERSION_1_6
+import proguard.classfile.attribute.visitor.AllAttributeVisitor
+import proguard.classfile.util.ClassReferenceInitializer
+import proguard.classfile.util.ClassSuperHierarchyInitializer
+import proguard.classfile.visitor.AllMethodVisitor
+import proguard.classfile.visitor.ClassPoolFiller
+import proguard.classfile.visitor.ClassVersionFilter
+import proguard.io.ClassDataEntryWriter
+import proguard.io.DataEntryNameFilter
+import proguard.io.DataEntryReader
+import proguard.io.DataEntryWriter
+import proguard.io.FileSource
+import proguard.io.FilteredDataEntryReader
+import proguard.io.FixedFileWriter
+import proguard.io.IdleRewriter
+import proguard.io.RenamedDataEntryWriter
+import proguard.io.util.IOUtil
+import proguard.preverify.CodePreverifier
+import proguard.util.ConcatenatingStringFunction
+import proguard.util.ConstantStringFunction
+import proguard.util.ExtensionMatcher
+import proguard.util.SuffixRemovingStringFunction
+import java.io.File
+
+
+fun main(args: Array<String>) {
+    // Read a JBC file and write a class file
+ 
+    val inputSource = FileSource(File(args[0]))
+
+    val programClassPool = ClassPool()
+    val libraryClassPool = if (args.size > 2) IOUtil.read(args[2], true) else ClassPool()
+
+    val jbcReader: DataEntryReader = JbcReader(
+        ClassPoolFiller(programClassPool)
+    )
+
+    val reader: DataEntryReader = FilteredDataEntryReader(
+        DataEntryNameFilter(ExtensionMatcher(".jbc")), jbcReader
+    )
+
+    inputSource.pumpDataEntries(reader)
+
+    // Preverify before writing the class
+    preverify(programClassPool, libraryClassPool)
+
+    val outputFile = File(args[1])
+    val writer = FixedFileWriter(outputFile)
+
+    val jbcAsClassWriter: DataEntryWriter = RenamedDataEntryWriter(
+        ConcatenatingStringFunction(
+            SuffixRemovingStringFunction(".jbc"),
+            ConstantStringFunction(".class")
+        ),
+        ClassDataEntryWriter(programClassPool, writer)
+    )
+
+    // Write the class file by reading in the jbc file and 
+    // replacing it using the `IdleRewriter`.
+    inputSource.pumpDataEntries(
+        FilteredDataEntryReader(
+            DataEntryNameFilter(ExtensionMatcher(".jbc")),
+            IdleRewriter(jbcAsClassWriter)
+        )
+    )
+
+    writer.close()
+}
+
+fun preverify(libraryClassPool: ClassPool, programClassPool: ClassPool) {
+    programClassPool.classesAccept(ClassReferenceInitializer(programClassPool, libraryClassPool))
+    programClassPool.classesAccept(ClassSuperHierarchyInitializer(programClassPool, libraryClassPool))
+    libraryClassPool.classesAccept(ClassReferenceInitializer(programClassPool, libraryClassPool))
+    libraryClassPool.classesAccept(ClassSuperHierarchyInitializer(programClassPool, libraryClassPool))
+    programClassPool.classesAccept(
+        ClassVersionFilter(
+            CLASS_VERSION_1_6,
+            AllMethodVisitor(
+                AllAttributeVisitor(
+                    CodePreverifier(false)
+                )
+            )
+        )
+    )
+}
+```
+
 
 ## Contributing
 
@@ -90,4 +186,4 @@ the [Apache License Version 2.0](LICENSE).
 
 Enjoy!
 
-Copyright (c) 2002-2020 [Guardsquare NV](https://www.guardsquare.com/)
+Copyright (c) 2002-2022 [Guardsquare NV](https://www.guardsquare.com/)

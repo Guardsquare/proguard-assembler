@@ -1,143 +1,24 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
-    id 'com.github.johnrengelman.shadow'
-    id 'distribution'
-    id 'java'
-    id 'application'
-    id 'maven-publish'
-    id 'signing'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
 }
 
-group = 'com.guardsquare'
-version = '1.0.0'
-
-repositories {
-    mavenLocal()
-    mavenCentral()
+allprojects {
+    group = 'com.guardsquare'
+    version = '1.0.0'
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
-    }
-}
-
-dependencies {
-    implementation 'com.guardsquare:proguard-core:7.1.0'
-}
-
-task fatJar(type: ShadowJar) {
-    mainClassName = 'proguard.Assembler'
-    destinationDirectory.set(file("$rootDir/lib"))
-    archiveFileName.set('assembler.jar')
-    from sourceSets.main.output
-    configurations = [project.configurations.runtimeClasspath]
-    manifest {
-        attributes(
-                'Main-Class': 'proguard.Assembler',
-                'Implementation-Version': archiveVersion.get())
-    }
-}
-
-assemble.dependsOn fatJar
-
-distributions {
-    main {
-        distributionBaseName.set('proguard-assembler')
-        contents {
-            into('lib') {
-                from fatJar.outputs
-            }
-            into('docs') {
-                from('docs/md') {
-                    includeEmptyDirs = false
-                    include '**/*.md'
-                }
-            }
-            from(rootDir) {
-                include 'bin/'
-                include 'LICENSE'
-            }
-        }
-    }
-}
-
-distTar {
-    compression = Compression.GZIP
-    archiveExtension.set('tar.gz')
-}
-
-publishing {
-    publications {
-        create('proguardAssembler', MavenPublication) {
-            from components.java
-            pom {
-                name = "[$groupId] $artifactId"
-                description = 'The ProGuard Assembler and Disassembler can assemble and disassemble Java class files.'
-                url = 'https://github.com/Guardsquare/proguard-assembler'
-                developers {
-                    developer {
-                        id = 'lafortune'
-                        name = 'Eric Lafortune'
-                        url = 'https://www.guardsquare.com/proguard'
-                        organization = 'Guardsquare'
-                        organizationUrl = 'https://www.guardsquare.com/'
-                        roles = ['Project Administrator', 'Developer']
-                    }
-                }
-                licenses {
-                    license {
-                        name = 'Apache License Version 2.0'
-                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution = 'repo'
-                    }
-                }
-                issueManagement {
-                    system = 'Github Tracker'
-                    url = 'https://github.com/Guardsquare/proguard-assembler/issues'
-                }
-                scm {
-                    url = 'https://github.com/Guardsquare/proguard-assembler.git'
-                    connection = 'scm:git:https://github.com/Guardsquare/proguard-assembler.git'
-                }
-                properties = [
-                        'project.build.sourceEncoding': 'UTF-8'
-                ]
-            }
-        }
-    }
+subprojects {
     repositories {
-        maven {
-            name = 'Github'
-            url = uri('https://maven.pkg.github.com/guardsquare/proguard-assembler')
-            credentials {
-                username = project.findProperty('PROGUARD_GITHUB_USERNAME')
-                password = project.findProperty('PROGUARD_GITHUB_TOKEN')
-            }
-        }
-        maven {
-            name = 'Sonatype'
-            url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
-            credentials(PasswordCredentials) {
-                username = findProperty('PROGUARD_STAGING_USERNAME')
-                password = findProperty('PROGUARD_STAGING_PASSWORD')
-            }
-        }
+        mavenCentral()
+        mavenLocal()
     }
 }
 
-// We use in-memory ascii-armored keys
-// See https://docs.gradle.org/current/userguide/signing_plugin.html#sec:in-memory-keys
-if (hasProperty('PROGUARD_SIGNING_KEY')) {
-    signing {
-        String key = findProperty('PROGUARD_SIGNING_KEY')
-        String password = findProperty('PROGUARD_SIGNING_PASSWORD')
-        useInMemoryPgpKeys(key, password)
-        sign publishing.publications.proguardAssembler
+nexusPublishing {
+    repositories {
+        sonatype {
+            username = findProperty('PROGUARD_STAGING_USERNAME')
+            password = findProperty('PROGUARD_STAGING_PASSWORD')
+        }
     }
-}
-
-clean {
-    delete file("$rootDir/lib")
 }
