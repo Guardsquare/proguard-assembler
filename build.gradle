@@ -1,3 +1,5 @@
+import io.github.gradlenexus.publishplugin.NexusRepository
+
 plugins {
     id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
 }
@@ -17,8 +19,8 @@ subprojects {
 nexusPublishing {
     repositories {
         sonatype {
-            username = findProperty('PROGUARD_STAGING_USERNAME')
-            password = findProperty('PROGUARD_STAGING_PASSWORD')
+            username = findProperty('PROGUARD_STAGING_USERNAME') as NexusRepository
+            password = findProperty('PROGUARD_STAGING_PASSWORD') as NexusRepository
         }
     }
 }
