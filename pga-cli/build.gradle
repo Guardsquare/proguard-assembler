@@ -17,22 +17,22 @@ dependencies {
 }
 
 application {
-    mainClassName = 'com.guardsquare.proguard.assembler.AssemblerCli'
+    mainClass = 'com.guardsquare.proguard.assembler.AssemblerCli'
 }
 
 jar {
     dependsOn(":pga-lib:jar")
     manifest {
-        attributes 'Main-Class': application.mainClassName
+        attributes 'Main-Class': application.mainClass
     }
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
-    archiveName "assembler.jar"
+    archiveFileName = "assembler.jar"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-task copyBuild(type: Copy) {
+tasks.register('copyBuild', Copy) {
     dependsOn tasks.jar
     tasks.assemble.dependsOn(it)
 
