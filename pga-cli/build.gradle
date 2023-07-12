@@ -1,9 +1,9 @@
 plugins {
-    id 'distribution'
-    id 'java'
-    id 'application'
-    id 'maven-publish'
-    id 'signing'
+    id "distribution"
+    id "java"
+    id "application"
+    id "maven-publish"
+    id "signing"
 }
 
 java {
@@ -17,13 +17,13 @@ dependencies {
 }
 
 application {
-    mainClass = 'com.guardsquare.proguard.assembler.AssemblerCli'
+    mainClass = "com.guardsquare.proguard.assembler.AssemblerCli"
 }
 
 jar {
     dependsOn(":pga-lib:jar")
     manifest {
-        attributes 'Main-Class': application.mainClass
+        attributes "Main-Class": application.mainClass
     }
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
@@ -32,7 +32,7 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-tasks.register('copyBuild', Copy) {
+tasks.register("copyBuild", Copy) {
     dependsOn tasks.jar
     tasks.assemble.dependsOn(it)
 
@@ -42,7 +42,7 @@ tasks.register('copyBuild', Copy) {
 
 distributions {
     main {
-        distributionBaseName.set('proguard-assembler')
+        distributionBaseName.set("proguard-assembler")
         contents {
             into("$rootDir/lib") {
                 from jar.outputs
@@ -50,12 +50,12 @@ distributions {
             into("docs") {
                 from("$rootDir/docs/md") {
                     includeEmptyDirs = false
-                    include '**/*.md'
+                    include "**/*.md"
                 }
             }
             from(rootDir) {
                 include "$rootDir/bin/"
-                include 'LICENSE'
+                include "LICENSE"
             }
         }
     }
@@ -63,7 +63,7 @@ distributions {
 
 distTar {
     compression = Compression.GZIP
-    archiveExtension.set('tar.gz')
+    archiveExtension.set("tar.gz")
 }
 
 clean {
