@@ -61,7 +61,6 @@ distributions {
     }
 }
 
-
 tasks.distTar {
     compression = Compression.GZIP
     archiveExtension.set("tar.gz")

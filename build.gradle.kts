@@ -21,13 +21,9 @@ subprojects {
 
 nexusPublishing {
     repositories.sonatype {
-        val name = findProperty("PROGUARD_STAGING_USERNAME")
-        if (name != null) {
-            username.set(name as String)
-        }
-        val pass = findProperty("PROGUARD_STAGING_PASSWORD")
-        if (pass != null) {
-            password.set(pass as String)
+        if (hasProperty("PROGUARD_STAGING_USERNAME") && hasProperty("PROGUARD_STAGING_PASSWORD")) {
+            username.set(findProperty("PROGUARD_STAGING_USERNAME") as String)
+            password.set(findProperty("PROGUARD_STAGING_PASSWORD") as String)
         }
     }
 }
