@@ -1,14 +1,14 @@
 plugins {
-    id "java"
-    id "java-library"
-    id "maven-publish"
-    id "signing"
+    id("java")
+    id("java-library")
+    id("maven-publish")
+    id("signing")
 
-    id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
-    id "com.adarshr.test-logger"
-    id "jacoco"
-    id "org.jlleitschuh.gradle.ktlint"
-    id "java-test-fixtures"
+    id("org.jetbrains.kotlin.jvm") version "$kotlinVersion"
+    id("com.adarshr.test-logger")
+    id("jacoco")
+    id("org.jlleitschuh.gradle.ktlint")
+    id("java-test-fixtures")
 }
 
 java {
@@ -21,18 +21,18 @@ java {
 }
 
 dependencies {
-    api "com.guardsquare:proguard-core:${proguardCoreVersion}"
+    api("com.guardsquare:proguard-core:${proguardCoreVersion}")
 
-    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    testImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
-    testImplementation "dev.zacsweers.kctfork:core:0.3.0"
-    testImplementation "io.kotest:kotest-runner-junit5-jvm:$kotestVersion" // for kotest framework
-    testImplementation "io.kotest:kotest-assertions-core-jvm:$kotestVersion" // for kotest core jvm assertions
-    testImplementation "io.kotest:kotest-property-jvm:$kotestVersion" // for kotest property test
-    testImplementation "io.mockk:mockk:1.13.5" // for mocking
+    testImplementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+    testImplementation("dev.zacsweers.kctfork:core:0.3.0")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion") // for kotest framework
+    testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion") // for kotest core jvm assertions
+    testImplementation("io.kotest:kotest-property-jvm:$kotestVersion") // for kotest property test
+    testImplementation("io.mockk:mockk:1.13.5") // for mocking
 
     testImplementation(testFixtures("com.guardsquare:proguard-core:${proguardCoreVersion}")) {
-        exclude group: "com.guardsquare", module: "proguard-core"
+        exclude(group: "com.guardsquare", module: "proguard-core")
     }
 }
 
@@ -57,7 +57,7 @@ jacocoTestReport {
     reports {
         xml.required = true
         csv.required = true
-        html.destination file("${buildDir}/reports/coverage")
+        html.destination(file("${buildDir}/reports/coverage"))
     }
 }
 
@@ -97,17 +97,17 @@ publishing {
                 }
             }
 
-            from components.java
+            from(components.java)
 
             if (project.hasProperty("PROGUARD_SIGNING_KEY")) {
                 // We use in-memory ascii-armored keys
                 // See https://docs.gradle.org/current/userguide/signing_plugin.html#sec:in-memory-keys
-                signing {
+                signing({
                     String key = project.findProperty("PROGUARD_SIGNING_KEY")
                     String password = project.findProperty("PROGUARD_SIGNING_PASSWORD")
                     useInMemoryPgpKeys(key, password)
-                    sign publication
-                }
+                    sign(publication)
+                })
             }
         }
     }

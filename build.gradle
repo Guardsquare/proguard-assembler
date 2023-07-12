@@ -1,11 +1,11 @@
 import io.github.gradlenexus.publishplugin.NexusRepository
 
 plugins {
-    id "io.github.gradle-nexus.publish-plugin" version "1.1.0"
-    id "org.jetbrains.kotlin.jvm" version "$kotlinVersion" apply false
-    id "com.adarshr.test-logger" version "3.2.0" apply false
-    id "org.jlleitschuh.gradle.ktlint" version "10.3.0" apply false
-    id "java-test-fixtures"
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("org.jetbrains.kotlin.jvm") version "$kotlinVersion" apply false
+    id("com.adarshr.test-logger") version "3.2.0" apply false
+    id("org.jlleitschuh.gradle.ktlint") version "10.3.0" apply false
+    id("java-test-fixtures")
 }
 
 allprojects {

@@ -1,9 +1,9 @@
 plugins {
-    id "distribution"
-    id "java"
-    id "application"
-    id "maven-publish"
-    id "signing"
+    id("distribution")
+    id("java")
+    id("application")
+    id("maven-publish")
+    id("signing")
 }
 
 java {
@@ -22,30 +22,30 @@ application {
 
 jar {
     dependsOn(":pga-lib:jar")
-    manifest {
+    manifest({
         attributes "Main-Class": application.mainClass
-    }
-    from {
+    })
+    from({
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+    })
     archiveFileName = "assembler.jar"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 tasks.register("copyBuild", Copy) {
-    dependsOn tasks.jar
+    dependsOn(tasks.jar)
     tasks.assemble.dependsOn(it)
 
-    from tasks.jar.outputs
-    into file("$rootDir/lib")
+    from(tasks.jar.outputs)
+    into(file("$rootDir/lib"))
 }
 
 distributions {
     main {
         distributionBaseName.set("proguard-assembler")
-        contents {
+        contents({
             into("$rootDir/lib") {
-                from jar.outputs
+                from(jar.outputs)
             }
             into("docs") {
                 from("$rootDir/docs/md") {
@@ -54,10 +54,10 @@ distributions {
                 }
             }
             from(rootDir) {
-                include "$rootDir/bin/"
-                include "LICENSE"
+                include("$rootDir/bin/")
+                include("LICENSE")
             }
-        }
+        })
     }
 }
 
@@ -67,5 +67,5 @@ distTar {
 }
 
 clean {
-    delete file("$rootDir/lib")
+    delete(file("$rootDir/lib"))
 }
