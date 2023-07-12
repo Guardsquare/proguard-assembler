@@ -4,7 +4,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
 
-    id "org.jetbrains.kotlin.jvm"
+    id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
     id 'com.adarshr.test-logger'
     id 'jacoco'
     id "org.jlleitschuh.gradle.ktlint"
@@ -21,27 +21,19 @@ java {
 }
 
 dependencies {
-    api 'com.guardsquare:proguard-core:9.0.3'
+    api "com.guardsquare:proguard-core:${proguardCoreVersion}"
 
-    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-common:${kotlinVersion}"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-metadata-jvm:${kotlinxMetadataVersion}"
-    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
-    testImplementation "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
-    testImplementation 'io.kotest:kotest-runner-junit5-jvm:4.6.0'
-    testImplementation 'io.kotest:kotest-runner-junit5-jvm:4.6.0'
-    testFixturesImplementation "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
-    testFixturesImplementation group: "dev.zacsweers.kctfork", name: "core", version: "0.2.1"
-    testFixturesImplementation 'io.kotest:kotest-runner-junit5-jvm:5.5.4' // for kotest framework
-    testImplementation 'io.kotest:kotest-runner-junit5-jvm:5.5.4' // for kotest framework
-    testImplementation 'io.kotest:kotest-assertions-core-jvm:5.5.4' // for kotest core jvm assertions
-    testFixturesImplementation 'io.kotest:kotest-assertions-core-jvm:5.5.4' // for kotest core jvm assertions
-    testImplementation 'io.kotest:kotest-property-jvm:5.5.4' // for kotest property test
-    testImplementation 'io.kotest:kotest-framework-datatest:5.5.4'
-    testImplementation 'io.mockk:mockk:1.13.3' // for mocking
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0' // for junit framework
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0' // for junit framework
+    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+    testImplementation 'dev.zacsweers.kctfork:core:0.3.0'
+    testImplementation "io.kotest:kotest-runner-junit5-jvm:$kotestVersion" // for kotest framework
+    testImplementation "io.kotest:kotest-assertions-core-jvm:$kotestVersion" // for kotest core jvm assertions
+    testImplementation "io.kotest:kotest-property-jvm:$kotestVersion" // for kotest property test
+    testImplementation 'io.mockk:mockk:1.13.5' // for mocking
 
-    testFixturesImplementation("com.guardsquare:proguard-assembler:1.0.0")
+    testImplementation(testFixtures("com.guardsquare:proguard-core:${proguardCoreVersion}")) {
+        exclude group: 'com.guardsquare', module: 'proguard-core'
+    }
 }
 
 // Early access automatic downloads are not yet supported:
@@ -53,6 +45,25 @@ test {
     useJUnitPlatform()
 }
 
+task testAllJavaVersions() { testAllTask ->
+    dependsOn(test) // the usual test runs on Java 8
+
+    javaVersionsForTest.each {version ->
+        task("testJava$version", type: Test) {
+            useJUnitPlatform()
+            ignoreFailures = true
+
+            // The version of bytebuddy used by mockk only supports Java 20 experimentally so far
+            if (version == 20) systemProperty 'net.bytebuddy.experimental', true
+
+            testAllTask.dependsOn(it)
+
+            javaLauncher = javaToolchains.launcherFor {
+                languageVersion = JavaLanguageVersion.of(version)
+            }
+        }
+    }
+}
 
 jacocoTestReport {
     // Define which classes need to be monitored
