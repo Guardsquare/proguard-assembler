@@ -29,32 +29,32 @@ dependencies {
     testImplementation("io.kotest:kotest-property-jvm:5.6.2") // for kotest property test
     testImplementation("io.mockk:mockk:1.13.5") // for mocking
 
+    testImplementation(testFixtures("com.guardsquare:proguard-core:9.0.9"))
 //    testImplementation(testFixtures("com.guardsquare:proguard-core:9.0.9")) {
 //        exclude(group = "com.guardsquare", module ="proguard-core")
 //    }
 }
 
-//tasks.test {
-//    useJUnitPlatform()
-//}
-//
-//tasks.jacocoTestReport {
-//    // Define which classes need to be monitored
-//    val sources = files(sourceSets.main.allSource.srcDirs)
+tasks.test {
+    useJUnitPlatform()
+}
+
+tasks.jacocoTestReport {
+    // Define which classes need to be monitored
+//    val sources = files(sourceSets.allSource.srcDirs)
 //    sourceDirectories.setFrom(sources)
 //    additionalSourceDirs.setFrom(sources)
-//    sourceDirectories.setFrom(sources)
 //    val classes = files(sourceSets.main.output.classesDirs)
 //    classDirectories.setFrom(classes)
 //    executionData.setFrom(project.fileTree(dir: ".", include: "**/build/jacoco/*.exec"))
-//    reports {
-//        xml.required = true
-//        csv.required = true
-//        html.destination(file("${buildDir}/reports/coverage"))
-//    }
-//}
-//
-//publishing {
+    reports {
+        xml.required = true
+        csv.required = true
+        html.outputLocation.set(layout.buildDirectory.dir("$buildDir/reports/coverage"))
+    }
+}
+
+// publishing {
 //    publications {
 //        mavenJava(MavenPublication) { publication ->
 //            groupId = "com.guardsquare"
@@ -104,4 +104,4 @@ dependencies {
 //            }
 //        }
 //    }
-//}
+// }

@@ -1,6 +1,3 @@
-import io.github.gradlenexus.publishplugin.NexusRepository
-
-
 plugins {
     `java-gradle-plugin`
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
@@ -21,12 +18,16 @@ subprojects {
         mavenLocal()
     }
 }
-//
-//nexusPublishing {
-//    repositories {
-//        sonatype {
-//            username.set(findProperty("PROGUARD_STAGING_USERNAME") as String)
-//            password.set(findProperty("PROGUARD_STAGING_PASSWORD") as String)
-//        }
-//    }
-//}
+
+nexusPublishing {
+    repositories.sonatype {
+        val name = findProperty("PROGUARD_STAGING_USERNAME")
+        if (name != null) {
+            username.set(name as String)
+        }
+        val pass = findProperty("PROGUARD_STAGING_PASSWORD")
+        if (pass != null) {
+            password.set(pass as String)
+        }
+    }
+}
