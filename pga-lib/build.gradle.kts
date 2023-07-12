@@ -29,9 +29,9 @@ dependencies {
     testImplementation("io.kotest:kotest-property-jvm:5.6.2") // for kotest property test
     testImplementation("io.mockk:mockk:1.13.5") // for mocking
 
-    testImplementation(testFixtures("com.guardsquare:proguard-core:9.0.9")) {
-        exclude(group = "com.guardsquare", module ="proguard-core")
-    }
+//    testImplementation(testFixtures("com.guardsquare:proguard-core:9.0.9")) {
+//        exclude(group = "com.guardsquare", module ="proguard-core")
+//    }
 }
 
 //tasks.test {

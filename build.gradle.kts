@@ -21,12 +21,12 @@ subprojects {
         mavenLocal()
     }
 }
-
-nexusPublishing {
-    repositories {
-        sonatype {
-            username.set(findProperty("PROGUARD_STAGING_USERNAME") as NexusRepository)
-            password.set(findProperty("PROGUARD_STAGING_PASSWORD") as NexusRepository)
-        }
-    }
-}
+//
+//nexusPublishing {
+//    repositories {
+//        sonatype {
+//            username.set(findProperty("PROGUARD_STAGING_USERNAME") as String)
+//            password.set(findProperty("PROGUARD_STAGING_PASSWORD") as String)
+//        }
+//    }
+//}
