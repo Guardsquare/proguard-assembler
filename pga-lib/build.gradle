@@ -53,26 +53,6 @@ test {
     useJUnitPlatform()
 }
 
-tasks.register('testAllJavaVersions') { testAllTask ->
-    dependsOn(test) // the usual test runs on Java 8
-
-    javaVersionsForTest.each { version ->
-
-        task.register("testJava$version", type: Test) {
-
-            // The version of bytebuddy used by mockk only supports Java 20 experimentally so far
-            if (version == 20) systemProperty 'net.bytebuddy.experimental', true
-
-            useJUnitPlatform()
-
-            testAllTask.dependsOn(it)
-
-            javaLauncher = javaToolchains.launcherFor {
-                languageVersion = JavaLanguageVersion.of(version)
-            }
-        }
-    }
-}
 
 jacocoTestReport {
     // Define which classes need to be monitored
@@ -84,8 +64,8 @@ jacocoTestReport {
     classDirectories.setFrom(classes)
     executionData.setFrom project.fileTree(dir: '.', include: '**/build/jacoco/*.exec')
     reports {
-        xml.getRequired().set(true)
-        csv.getRequired().set(true)
+        xml.required = true
+        csv.required = true
         html.destination file("${buildDir}/reports/coverage")
     }
 }
