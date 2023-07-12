@@ -20,52 +20,53 @@ application {
     mainClass = "com.guardsquare.proguard.assembler.AssemblerCli"
 }
 
-//tasks.jar {
-//    dependsOn(":pga-lib:jar")
-//    manifest({
-//        Attribute.of("Main-Class", application.mainClass)
-//    })
-//    from(
-//        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-//    )
-//    archiveFileName = "assembler.jar"
-//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-//}
-//
-//tasks.register("copyBuild", Copy) {
-//    dependsOn(tasks.jar)
-//    tasks.assemble.dependsOn(it)
-//
-//    from(tasks.jar.outputs)
-//    into(file("$rootDir/lib"))
-//}
+tasks.jar {
+    dependsOn(":pga-lib:jar")
+    manifest {
+        Attribute.of("Main-Class", application.mainClass.javaClass)
+    }
+    from(
+        configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) },
+    )
+    archiveFileName.set("assembler.jar")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
 
-//distributions {
-//    main {
-//        distributionBaseName.set("proguard-assembler")
-//        contents({
-//            into("$rootDir/lib") {
-//                from(jar.outputs)
-//            }
-//            into("docs") {
-//                from("$rootDir/docs/md") {
-//                    includeEmptyDirs = false
-//                    include "**/*.md"
-//                }
-//            }
-//            from(rootDir) {
-//                include("$rootDir/bin/")
-//                include("LICENSE")
-//            }
-//        })
-//    }
-//}
-//
-//distTar {
-//    compression = Compression.GZIP
-//    archiveExtension.set("tar.gz")
-//}
-//
-//clean {
-//    delete(file("$rootDir/lib"))
-//}
+tasks.register<Copy>("copyBuild") {
+    dependsOn(tasks.jar)
+    tasks.assemble.get().dependsOn(this)
+
+    from(tasks.jar.get().outputs)
+    into(file("$rootDir/lib"))
+}
+
+distributions {
+    main {
+        distributionBaseName.set("proguard-assembler")
+        contents {
+            into("$rootDir/lib") {
+                from(tasks.jar.get().outputs)
+            }
+            into("docs") {
+                from("$rootDir/docs/md") {
+                    includeEmptyDirs = false
+                    include("**/*.md")
+                }
+            }
+            from(rootDir) {
+                include("$rootDir/bin/")
+                include("LICENSE")
+            }
+        }
+    }
+}
+
+
+tasks.distTar {
+    compression = Compression.GZIP
+    archiveExtension.set("tar.gz")
+}
+
+tasks.clean {
+    delete(file("$rootDir/lib"))
+}
