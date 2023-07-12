@@ -6,7 +6,6 @@ plugins {
 
     id "org.jetbrains.kotlin.jvm"
     id 'com.adarshr.test-logger'
-    id 'de.jansauer.printcoverage'
     id 'jacoco'
     id "org.jlleitschuh.gradle.ktlint"
     id "java-test-fixtures"
@@ -24,10 +23,8 @@ java {
 dependencies {
     api 'com.guardsquare:proguard-core:9.0.3'
 
-    api "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
-    api "org.jetbrains.kotlin:kotlin-stdlib-common:${kotlinVersion}"
-    api "org.jetbrains.kotlinx:kotlinx-metadata-jvm:${kotlinxMetadataVersion}"
-
+    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-common:${kotlinVersion}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-metadata-jvm:${kotlinxMetadataVersion}"
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
     testImplementation "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
     testImplementation 'io.kotest:kotest-runner-junit5-jvm:4.6.0'
@@ -38,7 +35,6 @@ dependencies {
     testImplementation 'io.kotest:kotest-runner-junit5-jvm:5.5.4' // for kotest framework
     testImplementation 'io.kotest:kotest-assertions-core-jvm:5.5.4' // for kotest core jvm assertions
     testFixturesImplementation 'io.kotest:kotest-assertions-core-jvm:5.5.4' // for kotest core jvm assertions
-
     testImplementation 'io.kotest:kotest-property-jvm:5.5.4' // for kotest property test
     testImplementation 'io.kotest:kotest-framework-datatest:5.5.4'
     testImplementation 'io.mockk:mockk:1.13.3' // for mocking
@@ -57,12 +53,12 @@ test {
     useJUnitPlatform()
 }
 
-task testAllJavaVersions() { testAllTask ->
+tasks.register('testAllJavaVersions') { testAllTask ->
     dependsOn(test) // the usual test runs on Java 8
 
-    javaVersionsForTest.each {version ->
+    javaVersionsForTest.each { version ->
 
-        task("testJava$version", type: Test) {
+        task.register("testJava$version", type: Test) {
 
             // The version of bytebuddy used by mockk only supports Java 20 experimentally so far
             if (version == 20) systemProperty 'net.bytebuddy.experimental', true
@@ -88,8 +84,8 @@ jacocoTestReport {
     classDirectories.setFrom(classes)
     executionData.setFrom project.fileTree(dir: '.', include: '**/build/jacoco/*.exec')
     reports {
-        xml.enabled = true
-        csv.enabled = false
+        xml.getRequired().set(true)
+        csv.getRequired().set(true)
         html.destination file("${buildDir}/reports/coverage")
     }
 }
