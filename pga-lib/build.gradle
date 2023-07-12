@@ -45,26 +45,6 @@ test {
     useJUnitPlatform()
 }
 
-task testAllJavaVersions() { testAllTask ->
-    dependsOn(test) // the usual test runs on Java 8
-
-    javaVersionsForTest.each {version ->
-        task("testJava$version", type: Test) {
-            useJUnitPlatform()
-            ignoreFailures = true
-
-            // The version of bytebuddy used by mockk only supports Java 20 experimentally so far
-            if (version == 20) systemProperty 'net.bytebuddy.experimental', true
-
-            testAllTask.dependsOn(it)
-
-            javaLauncher = javaToolchains.launcherFor {
-                languageVersion = JavaLanguageVersion.of(version)
-            }
-        }
-    }
-}
-
 jacocoTestReport {
     // Define which classes need to be monitored
     def sources = files(sourceSets.main.allSource.srcDirs)
