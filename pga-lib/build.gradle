@@ -24,12 +24,14 @@ java {
 dependencies {
     api 'com.guardsquare:proguard-core:9.0.3'
 
-    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
-    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-common:${kotlinVersion}"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-metadata-jvm:${kotlinxMetadataVersion}"
+    api "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
+    api "org.jetbrains.kotlin:kotlin-stdlib-common:${kotlinVersion}"
+    api "org.jetbrains.kotlinx:kotlinx-metadata-jvm:${kotlinxMetadataVersion}"
 
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
     testImplementation "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
+    testImplementation 'io.kotest:kotest-runner-junit5-jvm:4.6.0'
+    testImplementation 'io.kotest:kotest-runner-junit5-jvm:4.6.0'
     testFixturesImplementation "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
     testFixturesImplementation group: "dev.zacsweers.kctfork", name: "core", version: "0.2.1"
     testFixturesImplementation 'io.kotest:kotest-runner-junit5-jvm:5.5.4' // for kotest framework
