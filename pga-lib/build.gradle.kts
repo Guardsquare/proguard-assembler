@@ -40,12 +40,12 @@ tasks.test {
 
 tasks.jacocoTestReport {
     // Define which classes need to be monitored
-//    val sources = files(sourceSets.allSource.srcDirs)
-//    sourceDirectories.setFrom(sources)
-//    additionalSourceDirs.setFrom(sources)
-//    val classes = files(sourceSets.main.output.classesDirs)
-//    classDirectories.setFrom(classes)
-//    executionData.setFrom(project.fileTree(dir: ".", include: "**/build/jacoco/*.exec"))
+    val sources = files(sourceSets.map { it.allSource.srcDirs })
+    sourceDirectories.setFrom(sources)
+    additionalSourceDirs.setFrom(sources)
+    val classes = files(sourceSets.main.map { it.output.classesDirs })
+    classDirectories.setFrom(classes)
+    executionData.setFrom(project.fileTree(Pair(".", "**/build/jacoco/*.exec")))
     reports {
         xml.required = true
         csv.required = true
@@ -53,7 +53,7 @@ tasks.jacocoTestReport {
     }
 }
 
-//publishing {
+// publishing {
 //    publications {
 //        create<MavenPublication>("maven") {
 //            groupId = "com.guardsquare"
@@ -103,4 +103,4 @@ tasks.jacocoTestReport {
 //            }
 //        }
 //    }
-//}
+// }
