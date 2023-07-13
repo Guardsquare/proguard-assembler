@@ -3,6 +3,12 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'signing'
+
+    id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
+    id 'com.adarshr.test-logger'
+    id 'jacoco'
+    id "org.jlleitschuh.gradle.ktlint"
+    id "java-test-fixtures"
 }
 
 java {
@@ -15,9 +21,45 @@ java {
 }
 
 dependencies {
-    api 'com.guardsquare:proguard-core:9.0.3'
+    api "com.guardsquare:proguard-core:${proguardCoreVersion}"
+
+    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+    testImplementation 'dev.zacsweers.kctfork:core:0.3.0'
+    testImplementation "io.kotest:kotest-runner-junit5-jvm:$kotestVersion" // for kotest framework
+    testImplementation "io.kotest:kotest-assertions-core-jvm:$kotestVersion" // for kotest core jvm assertions
+    testImplementation "io.kotest:kotest-property-jvm:$kotestVersion" // for kotest property test
+    testImplementation 'io.mockk:mockk:1.13.5' // for mocking
+
+    testImplementation(testFixtures("com.guardsquare:proguard-core:${proguardCoreVersion}")) {
+        exclude group: 'com.guardsquare', module: 'proguard-core'
+    }
 }
 
+// Early access automatic downloads are not yet supported:
+// https://github.com/gradle/gradle/issues/14814
+// But it will work if e.g. Java N-ea is pre-installed
+def javaVersionsForTest = 9..19
+
+test {
+    useJUnitPlatform()
+}
+
+jacocoTestReport {
+    // Define which classes need to be monitored
+    def sources = files(sourceSets.main.allSource.srcDirs)
+    sourceDirectories.setFrom(sources)
+    additionalSourceDirs.setFrom(sources)
+    sourceDirectories.setFrom(sources)
+    def classes = files(sourceSets.main.output.classesDirs)
+    classDirectories.setFrom(classes)
+    executionData.setFrom project.fileTree(dir: '.', include: '**/build/jacoco/*.exec')
+    reports {
+        xml.required = true
+        csv.required = true
+        html.destination file("${buildDir}/reports/coverage")
+    }
+}
 
 publishing {
     publications {
