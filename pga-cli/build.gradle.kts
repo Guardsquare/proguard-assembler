@@ -17,7 +17,7 @@ dependencies {
 }
 
 application {
-    mainClass = "com.guardsquare.proguard.assembler.AssemblerCli"
+    mainClass.set("com.guardsquare.proguard.assembler.AssemblerCli")
 }
 
 tasks.jar {
@@ -34,10 +34,13 @@ tasks.jar {
 
 tasks.register<Copy>("copyBuild") {
     dependsOn(tasks.jar)
-    tasks.assemble.get().dependsOn(this)
 
     from(tasks.jar.get().outputs)
     into(file("$rootDir/lib"))
+}
+
+tasks.assemble {
+    dependsOn(tasks.getByName("copyBuild"))
 }
 
 distributions {

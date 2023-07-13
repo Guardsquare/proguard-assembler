@@ -3,7 +3,7 @@ plugins {
     `java-library`
     // `maven-publish`
     signing
-//     id("org.jetbrains.kotlin.jvm") version "1.8.22"
+    // id("org.jetbrains.kotlin.jvm") version "1.8.20"
     id("com.adarshr.test-logger")
     jacoco
     id("org.jlleitschuh.gradle.ktlint")
@@ -22,8 +22,8 @@ java {
 dependencies {
     api("com.guardsquare:proguard-core:9.0.9")
 
-    testImplementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
-    testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
+    testImplementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.20")
+    testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.8.20")
     testImplementation("dev.zacsweers.kctfork:core:0.3.0")
     testImplementation("io.kotest:kotest-assertions-core-jvm:5.6.2") // for kotest core jvm assertions
     testImplementation("io.kotest:kotest-property-jvm:5.6.2") // for kotest property test
