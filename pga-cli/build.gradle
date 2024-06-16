@@ -34,11 +34,12 @@ jar {
 
 tasks.register('copyBuild', Copy) {
     dependsOn tasks.jar
-    tasks.assemble.dependsOn(it)
 
     from tasks.jar.outputs
     into file("$rootDir/lib")
 }
+
+tasks.named("build") { finalizedBy("copyBuild") }
 
 distributions {
     main {
