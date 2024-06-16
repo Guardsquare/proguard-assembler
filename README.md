@@ -68,7 +68,7 @@ You can download the assembler and disassembler in various forms:
 
 If you've downloaded the source code, you can build it with Gradle:
 
-    ./gradlew clean assemble
+    ./gradlew clean build
 
 Once built, you can [run the assembler and disassembler](index.md) with the
 script `bin/assembler.sh` or `bin/assembler.bat`.
