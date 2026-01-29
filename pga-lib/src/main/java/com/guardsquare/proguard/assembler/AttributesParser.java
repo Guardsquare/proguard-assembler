@@ -437,7 +437,7 @@ implements   ClassVisitor,
 
     public void visitInnerClassesInfo(Clazz clazz, InnerClassesInfo innerClassesInfo)
     {
-        innerClassesInfo.u2innerClassAccessFlags = p.expectClassAccessFlags();
+        innerClassesInfo.u2innerClassAccessFlags = p.expectInnerClassAccessFlags();
         innerClassesInfo.u2innerClassIndex       =
             cpe.addClassConstant(ClassUtil.internalClassName(p.expectWord("inner class")), null);
         while (p.expectIfNextTtypeEqualsWord(AssemblyConstants.AS,

@@ -550,6 +550,65 @@ public class Parser extends StreamTokenizer
 
 
     /**
+     * Parses one or more inner class access flags, as defined in JVMS §4.7.6.
+     *
+     * @return the access flags, in bit vector format.
+     */
+    public int expectInnerClassAccessFlags()
+    {
+        int accessFlags = 0;
+        while (nextTtypeEqualsWord())
+        {
+            switch (sval)
+            {
+                case JavaAccessConstants.PUBLIC:         accessFlags |= AccessConstants.PUBLIC;       break;
+                case JavaAccessConstants.PRIVATE:        accessFlags |= AccessConstants.PRIVATE;      break;
+                case JavaAccessConstants.PROTECTED:      accessFlags |= AccessConstants.PROTECTED;    break;
+                case JavaAccessConstants.STATIC:         accessFlags |= AccessConstants.STATIC;       break;
+                case JavaAccessConstants.FINAL:          accessFlags |= AccessConstants.FINAL;        break;
+                case JavaAccessConstants.ABSTRACT:       accessFlags |= AccessConstants.ABSTRACT;     break;
+                case JavaAccessConstants.SYNTHETIC:      accessFlags |= AccessConstants.SYNTHETIC;    break;
+                default:
+                {
+                    // Syntactic sugar: enum notation for enums.
+                    if (JavaAccessConstants.ENUM.equals(sval))
+                    {
+                        return accessFlags |
+                               AccessConstants.ENUM;
+                    }
+
+                    if (JavaAccessConstants.INTERFACE.equals(sval))
+                    {
+                        // Syntactic sugar: adding ACC_ABSTRACT to interfaces automatically.
+                        return accessFlags                  |
+                               AccessConstants.INTERFACE |
+                               AccessConstants.ABSTRACT;
+                    }
+
+                    if (AssemblyConstants.CLASS.equals(sval))
+                    {
+                        return accessFlags;
+                    }
+
+                    throwKeywordError(JavaAccessConstants.ENUM,
+                                      JavaAccessConstants.INTERFACE,
+                                      AssemblyConstants.CLASS);
+                }
+            }
+        }
+
+        // Syntactic sugar: @interface notation for annotations.
+        expect(ElementValue.TAG_ANNOTATION, "annotation class");
+        expectWord(JavaAccessConstants.INTERFACE);
+        // Syntactic sugar: adding ACC_ABSTRACT to interfaces automatically.
+        return accessFlags                  |
+               AccessConstants.INTERFACE |
+               AccessConstants.ABSTRACT  |
+               AccessConstants.ANNOTATION;
+    }
+
+
+    /**
      * Parses a loadable constant and returns its index in the constant pool.
      *
      * @param clazz the Class for which to parse the constant.
