@@ -114,17 +114,3 @@ class AssemblerErrorsTest : FreeSpec({
         }
     }
 })
-
-/**
- * Helper function to build and parse a java bytecode class from a string
- */
-fun buildProgramClass(jbc: String) {
-    val programClass = ProgramClass()
-    programClass.accept(
-        ClassParser(
-            Parser(
-                StringReader(jbc),
-            ),
-        ),
-    )
-}

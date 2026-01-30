@@ -36,14 +36,14 @@ public final class AssemblyConstants
 
     public static final String ACC_ANNOTATION = "annotation";
 
-    public static final String TYPE_STRING        = "String";
-    public static final String TYPE_CLASS         = "Class";
-    public static final String TYPE_METHOD_HANDLE = "MethodHandle";
-    public static final String TYPE_METHOD_TYPE   = "MethodType";
+    public static final String TYPE_STRING        = "java.lang.String";
+    public static final String TYPE_CLASS         = "java.lang.Class";
+    public static final String TYPE_METHOD_HANDLE = "java.lang.invoke.MethodHandle";
+    public static final String TYPE_METHOD_TYPE   = "java.lang.invoke.MethodType";
     public static final String TYPE_DYNAMIC       = "Dynamic";
-    public static final String TYPE_ANNOTATION    = "Annotation";
-    public static final String TYPE_ENUM          = "Enum";
-    public static final String TYPE_ARRAY         = "Array";
+    public static final String TYPE_ANNOTATION    = "java.lang.Annotation";
+    public static final String TYPE_ENUM          = "java.lang.Enum";
+    public static final String TYPE_ARRAY         = "java.lang.reflect.Array";
     public static final String TYPE_DOUBLE        = "D";
     public static final String TYPE_FLOAT         = "F";
     public static final String TYPE_LONG          = "L";
